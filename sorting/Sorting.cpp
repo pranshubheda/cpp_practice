@@ -5,18 +5,65 @@ void bubble_sort(int* data, int size, bool ascending=true);
 void selection_sort(int* data, int size, bool ascending=true);
 void insertion_sort(int* data, int size, bool ascending=true);
 void merge_sort(int* data, int size, bool ascending=true);
+void quick_sort(int* data, int size, bool ascending=true);
 void print_array(int* data, int size);
 
 int main() {
     int data[] = {8, 4, 5, 3, 2, 9, 4, 1};
+    // int data[] = {7, 5, 2, 4, 3, 9, 15, -1};
     // bubble_sort(data, size, true);
     // selection_sort(data, size, true);
     // insertion_sort(data, size, true);
     int size = sizeof(data)/sizeof(data[0]);
     print_array(data, size);
-    merge_sort(data, size, true);
+    // merge_sort(data, size, true);
+    quick_sort(data, size, true);
     print_array(data, size);
     return 0;
+}
+
+void quick_sort(int* data, int* current_data_range) {
+    int size = current_data_range[1] - current_data_range[0] + 1;
+    if(size == 1)
+        return;
+    // select pivot value
+    int pivot_index = current_data_range[1];
+    // find first element greater than pivot from left
+    // and first element less than pivot from right
+    int i=current_data_range[0], j=current_data_range[1]-1;
+    while(i<j) {
+        while(data[i] <= data[pivot_index] && i<j) {
+            i++;
+        }
+        while(data[j] >= data[pivot_index] && i<j) {
+            j--;
+        }
+        // swap
+        if (i<j) {
+            int temp = data[i];
+            data[i] = data[j];
+            data[j] = temp;
+        }
+    }
+    // swap cross over and pivot
+    if(data[pivot_index] < data[i]) {
+        int temp = data[i];
+        data[i] = data[pivot_index];
+        data[pivot_index] = temp;
+    }
+    // after crossover - split
+    int left_partition_range[] = {current_data_range[0], max(current_data_range[0], i-1)};
+    int right_partition_range[] = {min(current_data_range[1], i+1), current_data_range[1]};
+    // recurse
+    quick_sort(data, left_partition_range);
+    quick_sort(data, right_partition_range);
+    return;
+}
+ 
+void quick_sort(int* data, int size, bool ascending) {
+    int current_data_range[2] = {0, size-1};
+    quick_sort(data, current_data_range);
+    return;
 }
 
 void print_array(int data[], int size) {
